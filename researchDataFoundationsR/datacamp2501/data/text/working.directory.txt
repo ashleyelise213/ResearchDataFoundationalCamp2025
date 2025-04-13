@@ -1,0 +1,11 @@
+Start by opening the folder on your computer containing all the code for your project in VS Code.  Next, drag and drop your data into this folder--either drag it into the Explorer pane in VS Code or move the file there by some other means.    
+
+R has a concept called the *working directory* (directory is another word for folder).  The working directory defines how R refers to files located on your computer.  If I tell R to look for a file called "myfile.csv", it looks to see if "myfile.csv" is in the working directory; if not, it will tell me the file couldn't be found.  In the code I provided for this course, the parent folder contains a folder called "data".  If I want R to search for "myfile.csv" in the "data" folder, I have to use a slash like this: "data/myfile.csv"; this string is called a *path* because it includes both the filename and the sequence of folders required to get there.  Each slash separates folders along the *path* to the file.
+
+The beauty of the working directory is that it saves you from having to type *absolute paths* and it makes your code more cross-compatible with other computers.  Suppose you saved your code to a folder called "datacamp" on your Desktop.  On a Mac, the absolute path to your file is something like: "/Users/username/datacamp/data/myfile.csv".  On Windows, it might look like: "C:/Users/username/datacamp/data/myfile.csv".
+
+In R, you can check your working directory with the function `getwd()`.  You can change your working directory by specifying a *relative path* (relative to your working director) to the function `setwd(path)`.  To step up and out of the current folder, you can use `../other.path`.  
+
+LONG STORY SHORT
+
+By default, when using VS Code, the working directory should be set to the parent folder you opened, whose files are displayed in the Explorer pane.  Load files from your computer into R by putting the files into this folder, or a subfolder within it.  Then refer to its path: e.g. "data/myfile.csv".

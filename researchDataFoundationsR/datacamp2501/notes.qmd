@@ -1,0 +1,1478 @@
+---
+title: Introduction to R
+author: Ellery Galvin
+date: 1/9/25
+
+format: 
+  html:
+    fig-width: 8.5
+    fig-height: 4
+    code-fold: false
+    code-overflow: wrap
+    toc: true
+    embed-resources: true
+
+execute:
+  cache: true
+  error: true
+---
+
+# R fundamentals
+This section covers functions, variables, installing packages, loading data, vectors, dataframes, wrangling, and visualization.  We work with `tidyverse`.  I recommend this lesson to most anyone using R for data analysis.
+
+```{r}
+#| label: random.seed
+
+# Random elements of this notebook will evaluate identically 
+# across users if you run this line of code first.
+set.seed(87295)
+
+```
+
+
+## Hello World
+- This file is called a quarto notebook.
+- It contains a combination of *markdown* style text, and code chunks.
+- Markdown is a simple style that allows you to create headings of decreasing size with #, ##, ###, ...  bulleted lists with -, bold with **bold**, and italics with *italics*.  
+- There are other more advanced capabilities you can read about online.
+- We can also make code cells
+
+
+- `print` is called a *function*.  Many of the tools we will use are all *functions* built by someone else.
+- `"Hello World!"` is called a *string*.  A *string* is a kind of data made up of text.  We enclose strings in quotes.
+
+```{r}
+#| label: first.code.cell
+
+# This is a comment that R ignores when parsing code
+print("Hello World!")
+
+```
+
+- Every function is *called* by typing out: `function.name( argument )`; some people might say *execute* or *run* a function.  In our first program above, `function.name` is the word `print` and `argument` is the *string* `"Hello World"`.  
+- You can run a code cell by clicking Run Cell or pressing Cmd + Shft + Enter.  You can run the line where your cursor is by pressing Cmd + Enter.
+- You can *render* a quarto notebook by clicking the quarto symbol in the upper right.  More on that at the end.
+
+::: {.callout-note}
+## Exercise: hello world
+Every programmer begins their journey by greeting the new world they are about to join.  Create a *code chunk* called "print function". *Call* the `print` *function* on a *string* of your choice.
+
+---
+
+{Your code chunk goes here}
+:::
+
+
+## Calculator
+- R is a fancy calculator.
+```{r}
+#| label: calculator
+
+(2 + 3) * 5
+2^3
+2^3 / 3
+```
+
+::: {.callout-note}
+## Exercise 1: calculator 
+R is a fancy calculator.  Make a code chunk below under an exercise and title it `calculator`.  
+
+Write one or more expressions that use each of addition, subtraction, multiplication, division, exponentiation, and parentheses.
+
+---
+
+{Your code chunk here}
+:::
+
+::: {.callout-note}
+## Exercise 2: calculator
+Write an expression that R computes correctly, but which a simple calculator (such as might be on a phone) would get wrong if entered the same way.
+
+---
+
+{Your code chunk here}
+:::
+
+::: {.callout-note}
+## Exercise 3: calculator
+I'm planning an event for 329 people who all need transportation from Denver to Fort Collins.  We have charter buses that hold 64 people each, vans that hold 10 people each.  The buses are very expensive, so I only want to use one if it will be full.  The vans are cheaper, but still still expensive, so I only want to use full vans too.  Using the fewest total vehicles possible, how many full buses and full vans do I need to carry everyone?  How many people are leftover who I might want to convince to carpool?  Hint below.
+
+---
+
+{Your code chunk here}
+
+Hint: Use the modulo operato.
+:::
+
+## Variables
+- Programming languages are *languages*.
+- *Variables* have expressive names and values that they represent.  
+- To create a variable, we use the *assignment operator*,  <-
+
+
+```{r}
+#| label: variables
+#| error: true
+
+# Estimate the number of eyes in the zoom room
+num.per.animal <- 2
+num.people <- 20
+num.pets <- 3
+total.eyes <- (num.people + num.pets) * num.per.animal
+
+
+num.pets <- 3
+num.pets <- num.pets + 4
+
+# This line produces an error because you can't assign to a number
+# 3 <- 19
+```
+
+- Variables can be reassigned to new values.
+- Periods, numbers, underscores, letters are all okay.  Can't start with a number.
+- Click the R extension icon in the left sidebar of Visual Studio Code.  It will open a pane that contains a section called "Global Environment".  In here, will see all the variables you have created and some basic information about them, such as their type.  Click the icon with the magnifying glass to viwe them in detail.  Click the "x" to delete them.
+
+::: {.callout-note}
+## Exercise: variable names
+In the calculator above, the numbers are meaningless.  They could represent anything.  Now we're going to give them some meaning.
+
+Create a variable called two and assign the value -1.  Create a variable called number and assign the value 6.  Create a variable called number1 and assign the value 2.  Then, compute two times number raised to number1 power.
+
+---
+
+{Your code chunk here}
+
+Reflect on the choice of variables I suggested, and consider the importance of choosing descriptive names.  Repeat the problem using new variables with better names.
+:::
+
+::: {.callout-note}
+## Exercise: pointer or copy
+Consider the variable assignments below.  If you modify the value of x, does the value of z change?  If you modify the value of z, does the value of x change?
+
+```{r}
+#| label: pointer.or.copy
+
+x <- "x"
+z <- x
+```
+
+---
+
+{Your answer here}
+:::
+
+
+
+## Installing packages + loading data part 1
+- Packages are collections of functions and data that someone else programmed for you.  Don't reinvent the wheel!
+
+```{r}
+#| label: use.packages
+
+# To install a new package for the first time:
+# install.packages("tidyverse")
+# After running this once, you never have to run it again until you update R or the package.
+
+# Tell R to use a package in the current session.  
+# You have to call this once every time you start the R interpreter.
+library("tidyverse")
+
+```
+
+- `tidyverse` helps us with data cleaning, wrangling and visualization.
+- It is a wrapper around many smaller packages like `dplyr`, `stringr`, `tidyr`, `ggplot2` and others.
+- Conflicts occur when you load in functions or data from two different packages that have the same name.
+- If you wish to specify which version of filter to use, you must use the package name prefix.  `dplyr::` or `stats::` before `filter`.  If you just use `filter`, R will call `dplyr::filter` because it was loaded most recently (masks).
+
+
+::: {.callout-note}
+## Exercise: load from package
+Install a package called `fivethirtyeight` and load it into your namespace.  Find its documentation online and read about some of the datasets it provides.  The datasets are in your current namespace, so you can refer to any of them by name.  Start by saving the one about births since 2000 to a variable called `births`.
+
+---
+
+```{r}
+births <- fivethirtyeight::US_births_2000_2014
+
+
+```
+
+:::
+
+::: {.callout-tip collapse="true"}
+## Instructor solution
+{{< include solutions/_sol_packages1.qmd >}}
+:::
+
+
+## Inspecting dataframes + loading data part 2
+- Let's see some ways of viewing the data nicely.  All of the following are functions available either through base R or `tidyverse`.
+
+```{r}
+#| label: inspect.dataframes
+
+# View the whole dataframe
+# births
+
+str(births)
+glimpse(births)
+head(births)
+tail(births)
+nrow(births)
+dim(births)
+names(births)
+summary(births)
+
+# This line will produce an error when rendered because it tries to open a window.
+View(births)
+```
+
+- Integer, date, and ordered factor datatypes.
+- Dates are a special data type that understands how dates work.
+
+```{r}
+#| label: dates
+
+date()
+arbitrary.day <- ymd("2023-12-22")
+following.day <- arbitrary.day + 1
+arbitrary.day + 365
+```
+
+- `class` is a function we can use to check out the type of an R object.
+```{r}
+#| label: class
+
+class(births$day_of_week)
+```
+
+- Factors are a special datatype for categorical data.
+
+```{r}
+#| label: factors
+
+factor(c("small", "small", "medium"), levels=c("small", "medium", "large"))
+
+births$day_of_week %>% head()
+as.numeric(births$day_of_week) %>% head()
+```
+
+- Factors can have orderings, like the days of the week or sizes.  Strings don't have this feature.
+- Factors also store all the possible levels, even if that level doesn't appear in the data.
+- These features are essential for using *regression* in R.  The "first" level in the factor will always become part of the intercept term.
+
+
+- You're going to get a chance to inspect your own data in just a minute.  
+- Let's look at one more important way that many of you will load information into R, via files.
+- The R interpreter has a *working directory* (directory is another word for folder).  
+
+```{r}
+#| label: working.directory
+
+# Show the working directory
+getwd()
+list.files()
+```
+
+- Files you reference have *paths* relative to the working directory.  A path consists in a sequence of folders separated by slashes (`/`) ending in a file name (e.g. "myfile.csv").
+
+- To get my notes on this subject called "working.directory.txt" located within "export" within "text.notes", I would use.
+
+```{r}
+#| label: read.in.text
+
+# Read lines makes each line in the text file into a string and returns
+# a vector of strings.
+
+wd.notes <- readLines("data/text/working.directory.txt")
+```
+
+- In general, to load a file into R, put the file into your working directory, or a subdirectory, and provide R with the path the file.
+
+
+::: {.callout-note}
+## Exercise: load csv
+Above, we got data from the `fivethirtyeight` package.  Now we're going to get data by loading a csv file.
+
+Similar to how I used "readLines", use the "read_csv" function to make a dataframe out of the csv file called "iris.csv" inside the "data" subdirectory.  Save the data to a variable called `irises`.  If you run into problems, remember to check your working directory.
+:::
+::: {.callout-note}
+## Exercise: inspect dataframe
+Inspect the `irises` dataset using any of the approaches we've introduced so far.   Answer the following questions:
+
+- How many irises were measured?
+- What quantities were measured? 
+- What are the first, second, and third quartiles for petal length?
+:::
+
+
+- We've seen how dataframes contain our data as whole, but how do we break them down?  What are their parts?  How do we make them ourselves?
+
+## Vectors
+- Here's how to look at just one column in a dataframe.  `dataframe.name$column.name`.
+
+```{r}
+#| label: columns.of.dataframe
+
+births$year %>% head()
+births$births %>% head()
+```
+
+- This object is called an atomic vector, and it consists in an ordered sequence of R objects of the same type.  
+- Be careful not to call it a list, as there is a different data type called a list with slightly different properties and uses.
+- The square bracketed number at the beginning of each line are *indices*.  They indicate that the first vector element on that line is, say, the 5461 st element of the vector.
+
+- Why are vectors useful?  Computers are most helpful when the same operation must be done many times.
+- Let's make our own vectors now. 
+```{r}
+#| label: define.vectors
+
+red.apples <- c(2,3,5)
+green.apples <- c(5, 8, 2)
+```
+
+- `c` is another function.  c stands for combine.  
+- When functions take multiple arguments, we separate them with commas.  Spaces don't matter, but are good for style.
+- You will use the `c` function whenever you need to provide multiple values to a function as a single argument.  e.g. dimensions = c(width, height).
+- Vector arithmetic is elementwise and builtin
+- Most functions in R are *vectorized*
+
+```{r}
+#| label: vector.operations
+
+red.apples <- c(2,3,5)
+green.apples <- c(5, 8, 2)
+total.apples <- red.apples + green.apples
+all.apples <- c(red.apples, green.apples)
+them.apples <- red.apples + red.apples
+them.apples <- them.apples * green.apples
+```
+
+- The c function can also combine two or more vectors.
+
+## Dataframes
+- Dataframes are the main way we interact with data in R.
+- They consist in a set of columns with names, each of which is itself a vector.
+- The sequence of "first elementns" in the dataframe's columns is called the first "row".
+- Dataframes are like tables or matrices in that they have rows and columns, but it turns out there are other special datatypes in R for tables and matrices with slightly different properties.
+- When you want to experiment with manipulating data, it is often helpful to create a fake dataframe that you know well.  The `data.frame` function allows us to do this.
+
+```{r}
+#| label: dataframes
+
+tomato.data <- data.frame(
+    variety = c("cherry", "roma"),
+    size = c("small", "medium"),
+    avg.weight.g = c( 20, 80 )
+)
+
+tomato.data
+tomato.data$variety
+tomato.data$avg.weight.g - 1
+nrow(tomato.data)
+ncol(tomato.data)
+```
+
+::: {.callout-note}
+## Exercise: vectors and dataframes
+Define a vector called `mission` and give it the values Apollo 11, Voyager 1, and Curiousity.  Create another vector called `launch.year` and assign 1969, 1977, and 2011.  Make one more vector called `destination` with values Moon, Interstellar Space, and Mars.
+
+Now make a dataframe called `nasa.missions` that contains all this information and print it.
+:::
+
+- Let's do some data wrangling with `tidyverse`.
+
+
+## Selecting
+- How do we select columns in the dataframe?
+```{r}
+#| label: select
+
+select(births, year, month, date_of_month)
+select(births, month, year, date_of_month)
+select(births, -year)
+births <- select(
+    births, 
+    date, 
+    year, 
+    month, 
+    day = date_of_month, 
+    week_day = day_of_week, 
+    births 
+)
+head(births)
+
+births <- rename(births, birth.count = births )
+head(births)
+
+```
+
+- Retrieve a subset of the columns by mentioning their names.  Not we don't have to use dollar signs!
+- The order in which column names are mentioned is reflected in the output.
+- Remove a column with the minus sign
+- Optionally rename columns when you mention them.
+- If you just want to rename a column without having to mention everything else, use `rename`.
+
+
+## Functions and reading documentation
+- We've seen lots of functions in R, but what are they really?  How do we find them?  And how do we know how to use them?
+
+- Suppose we want to know how to combine two strings.  We can ask a chatbot like ChatGPT for the appropriate function.
+
+```{r}
+#| label: paste.vectorized
+#| error: true
+
+class.first.names <- c("Alfred", "Grace", "T")
+class.last.names <- c("Packer", "Hopper", "Swift")
+
+# This line makes an error because the comma is missing
+# class.names <- paste(class.first.names class.last.names)
+
+
+class.names <- paste(class.first.names, class.last.names)
+class.names
+
+```
+
+- Let's do something trickier.  Suppose we have a vector of data.
+```{r}
+#| label: simple.data
+
+my.data <- c(1, 2, 3, 4, 5)
+
+```
+
+- I'd like to take a random sample from my.data.  Let's ask a chatbot again.  We can copy the provided example.
+
+```{r}
+#| label: random.sample
+
+random.sample <- sample(my.data, size = 3)  # Extracts a random sample of 3 elements
+random.sample
+
+```
+
+- Maybe this isn't exactly what we wanted.  If we were using bootstrap resampling to simulate a larger dataset from a smaller one, we might want to sample with replacement.  
+- In addition to asking a chatbot, we can use the documentation.
+
+```{r}
+#| label: read.documentation
+#| eval: false
+
+help("sample")
+
+```
+
+Here are the main parts of every documentation page
+
+- Description is plain text for function
+- Usage shows the call signature and default argument values
+- R knows about TRUE and FALSE.  More later.
+- Arguments describes the meaning of each argument, and what type of data has to be supplied
+- Details contains various notes about usage
+- Value is the output of the function
+- References shows who to cite if you use this function
+- See Also is related functions that might be helpful
+- Examples.  Can run these with button.
+
+```{r}
+#| label: bootstrap.resample
+
+bootstrap.resample <- sample(my.data, size = 20, replace = TRUE)
+bootstrap.resample
+
+```
+
+- Note you can also use the `sample` function to produce a random permutation of a vector.  This is useful for permutation tests.
+
+```{r}
+#| label: permutation
+
+permuted <- sample(my.data)
+permuted
+```
+
+- R has lots of built in operations you will learn over time.
+
+::: {.callout-note}
+## Exercise 1: documentation
+Check out the documentation for the  `seq` function.  Answer the following questions with the documentation.  If you need to, create a code chunk to try things out. Try not to use a chatbot.  See hints below
+
+- In your own words, what does the seq function do?
+    - Seq() generates a sequence that is defined by the user.
+- What is the default value for the `to` argument?
+    - Length of 1 is default
+- What does the `by` argument do?
+    - Sets an integer to increment between the start and end numbers
+- What does the length.out argument do? 
+    - Sets a total number of integers allowed in the list
+
+```{r}
+seq(from = 10, to = 15, length.out = 2)
+
+
+```
+
+Hint: Read the details section carefully, including the description of typical usages.  Remember also that there are examples at the bottom.
+:::
+::: {.callout-note}
+## Exercise 2: documentation
+Write code that finds the sum of the first 9 odd numbers.  You may find the `sum` function helpful.
+
+```{r}
+
+sum(seq(from = 1, by = 2, length.out = 9))
+
+```
+
+:::
+::: {.callout-note}
+## Exercise 3: documentation
+Using only calls to the `seq` function and arithmetic operators, generate the following sequence: `5, 8, 9, 8, 5`.  
+
+```{r}
+
+
+```
+
+:::
+
+## Filter and Sort
+- We can also filter with conditional statements
+```{r}
+#| label: filter.arrange
+#| error: true
+
+# Using data in births, retrieve only the rows in years greater or equal to 2010
+filter(births, year >= 2010) %>% head()
+
+# Same, but also only Saturdays
+filter(births, year >= 2010, week_day = "Sat")
+# There is an error above due to the single = sign.  Use == for comparison.
+
+# Try again with ==
+filter(births, year >= 2010, week_day == "Sat") %>% head()
+
+# Sort ascending by births
+arrange(births, births) %>% head()
+
+# Sort descending by births
+arrange(births, desc(births)) %>% head()
+
+# Combine operations so far, plus tail, which shows just the last 6 elements
+tail(arrange(select(filter(births, year >= 2010, week_day == "Sat"), -date), desc(births)))
+```
+
+-  Getting kinda hard to read?  Introducing the pipe.
+```{r}
+#| label: pipes
+
+births %>%
+    select(-date) %>%
+    filter(year >= 2010, week_day == "Sat") %>%
+    arrange(desc(birth.count)) %>%
+    tail()
+```
+
+- The above syntax is given by the `magrittr` package, contained in `tidyverse`.  R also has a native pipe operator `|>` with similar functionality but slightly different syntax and limitations.  Just so you're aware.
+
+
+::: {.callout-note}
+## Exercise 1: select, sort, filter, arrange
+Using the births data set, select the `date` column and the `week_day` column, filter to only rows from January 1st, arrange by `births` descending.  Don't forget to use pipes (`%>%`).
+:::
+::: {.callout-note}
+## Exercise 2: select, sort, filter, arrange
+Among weekends in the year 2010, which day (Sat or Sun) typically has fewer births?  The exception is the weekend day with the overall smallest number of births.  Why is that day different?
+:::
+
+
+## Boolean values
+- When we used filter, we had an expression like `year >= 2010`.  What was happening there, and how did R understand it?
+- R understands the difference between right and wrong, true and false.  They are called booleans.
+```{r}
+#| label: boolean
+
+FALSE
+TRUE
+TRUE == false
+TRUE == FALSE
+TRUE != FALSE
+FALSE == FALSE
+!FALSE
+-1 > 0
+2 >= 2
+3 >= 2
+1.01 <= 1.02
+"a" < "b"
+"a" < "A"
+"A" < "b"
+"llama" >= "ladel"
+
+```
+
+- Like arithmetic, comparison operators are vectorized
+- The syntax 1:5 is a shortcut for the vector of integers from 1 to 5 like c(1, 2, 3, 4, 5)
+
+```{r}
+#| label: boolean.vector
+
+1:5
+1:5 < 3
+seq(1,10,2)
+1:5 < seq(1,10,2)
+c(TRUE, FALSE) | c(FALSE, FALSE)
+c(TRUE, FALSE) & c(FALSE, FALSE)
+```
+
+When we wrote `year >= 2010` we had a case similar in structure to `1:5 < 3`.  The left reference `year` is a vector of numerical year values, and the left reference `2010` is a constant number we wish to compare with every element of `year`.  What filter does is compute a boolean vector of the same length as the number of rows in the dataframe, then include every row where this vector is `TRUE`, and exclude otherwise.  
+
+::: {.callout-note}
+## Exercise 1: booleans
+In R, `TRUE` values are analogous to the number `1`, and `FALSE` values are analogous to the number `0`.  Test out my claim by creating a code chunk and testing if `TRUE` is equal to 1 and `FALSE` is equal to 0.  Can you do both logical tests in one line?
+
+:::
+
+::: {.callout-note}
+## Exercise 2: booleans
+What will happen if we apply the `sum` function to a vector of boolean values?  Try it out below.
+
+If I want to know the proportion of boolean values equal to `TRUE` instead of the count, we can use the arithmetic mean instead.  Try it, and verify that it's correct by using the `sum` and the `length` function together.
+
+---
+
+:::
+
+::: {.callout-note}
+## Exercise 3: boolens
+Find the proportion of all cats in the dataset named "Matilda".  The data's a bit sloppy, so be careful to count lower case "matilda" as well.
+
+```{r boolean values}
+ellerys.cats <- c("Matilda", "matilda", "matty", "Maverick", "Mallorie", "Matilda", "Matilda", "Missy", "Matilla", "Matt", "Maxine", "mallory", "matilda", "Max", "matilda", "Maxwell", "Mini", "Matilda", "Matthew", "Madison", "Maive", "matilda", "Mark", "mindy", "Matilda",  "Mandy", "Melville", "Marisha", "matilda", "marissa", "Matilda", "Mable",  "Maureen", "molly", "Matilda", "Matilda", "Moe", "Maha", "Melanie", "Melody", "matilda","Mina", "Manny")
+```
+
+
+
+:::
+
+## Mutation
+- We've seen sorting, filtering, and summarizing.  What's the equivalent to formulas in Excel?
+- Suppose I want to standardize the births column with z-scores, which I might do in preparation for regression.
+- The `mutate` function allows us to create new columns that are functions of the existing columns, or any data of the same length.
+- The syntax is: `data.frame %>% mutate( new.col.name = function.of.existing.cols )`
+
+```{r}
+#| label: mutate
+
+births <- births %>%
+    mutate(  birth.count.z = (birth.count - mean(birth.count)) / sd(birth.count)  )
+
+head(births)
+```
+
+
+::: {.callout-note}
+## Exercise 1: mutation
+Suppose we're interested in investigating whether more babies are born during warmer months. 
+
+Add a column to the birthdays data set that takes the value `TRUE` during warmer months (April through September), and `FALSE` during colder months (October through March);  call it `is.warmer`.  Hint: Check out the `between` function and see if you can use it.
+:::
+
+::: {.callout-note}
+## Exercise 2: mutation
+Create a similar column called `is.holiday`.  Use major federal holidays in the US.  You might want to check out the documentation for `case_when`.  This function allows you to test whether the input column matches any one of a list of tests (such as the date of a holiday), and outputs a corresponding value.  The syntax for each of these tests is  `test.resulting.in.boolean.val ~ output`.
+A chatbot could be very useful here too.
+:::
+
+::: {.callout-tip collapse="true"}
+## Instructor solution
+{{< include solutions/_sol_mutation1.qmd >}}
+:::
+
+
+
+## Grammar of graphics
+- Let's have a taste of visualization with `ggplot2`.  This package is loaded automatically when you call `library(tidyverse)`.  Though you have the option of using `library(ggplot2)` on its own if you don't want the rest of the tidyverse.
+
+- Suppose I'm interested in the number of births over time.
+
+
+```{r}
+#| label: fig-births.time
+#| fig-cap: "Investigates how the births each day changes over time"
+#| warning: false
+
+
+# One line at a time
+
+births.time <- ggplot(
+        data = births, 
+        mapping = aes(
+            x = date, 
+            y = birth.count, 
+            color= week_day
+        )
+    ) + 
+    geom_point(size = 2, alpha = 0.1) + 
+    geom_smooth(method = "loess") + 
+    theme_bw() +
+    labs(
+        x = "Date",
+        y = "Births Count",
+        title = "Births Over Time",
+        color = "Day of Week"
+    )
+births.time
+ggsave("export/births.time.jpg", create.dir = TRUE)
+```
+
+- The tidyverse data wrangling operations are changed together with pipes.
+- In contrast, a ggplot is made up of stacked layers.  So instead of piping, we add together the layers.  
+- The order of the layer matters; layes added later appear on top of existing layers.
+- The ggplot function contains the "piece of paper" on which everything else is built.  You can call it with no arguments.  But we usually provide at least the data argument.
+- Each argument to ggplot is like plot specifications that are inherited by every layer to come.  More on that below.
+- The mapping argument describes how the columns in the dataframe correspond to aesthetic elements of the plot.  Here, we specify that the `x` axis is the `date`, and the `y` axis is the `births` columns.  The `color` aesthetic refers to the color of the points, lines, or outlines of plot elements. 
+- `geom_` layers are the plot types you have to choose from.  There are lots!  `geom_point` is a scatter plot, `geom_smooth` is a summary curve like a linear regression or a moving average.  There's also `geom_histogram`, `geom_density`, `geom_violin`, `geom_bar`, and more!  
+- Each geom requires different aesthetics, and allows different aesthetics.  The documentation for each one has a section describing the aesthetics it needs.  
+- Above, we specified aesthetic mappings and data in the `ggplot` object, so each `geom_` layer inherits this information.  If we didn't specify in `ggplot`, we would have to provide the `data` and `mapping` arguments explicitly in each `geom_`.  This could be useful if you need different aesthetics or different data for each `geom_`.  
+- When you supply aesthetics to a `geom` outside the `mapping` argument, you are telling `ggplot2` to use this visual aesthetic consistently across all data elements on the plot (as opposed to varying this aesthetic according to a variable).
+- `theme_` layers are each a default collection of theming parameters.  There are tons of possible customizations that you can look up in the documentation for the `theme` function.  The prebuilt `theme_` layers are nice defaults that work in most circumstances.  There's also `theme_minimal`, `theme_void`, ...  Look up a list and try them out.
+- `labs` define the labels used for different plot elements.
+- `ggsave` takes the last active `ggplot` object and saves it to a file with the name given by its first argument, a string.  The extension provided in this string determines the file type.
+- R also allows you to plot data on geographical maps or images, but we won't cover that here.
+
+::: {.callout-note}
+## Exercise 1: grammar of graphics
+Are more babies born in warmer months?  In one figure, make a pair of violin plots to answer this question. Use `geom_violin()`.  Be sure to create labels and titles.  You'll want to specify the `x` and `y` aesthetics.
+:::
+
+::: {.callout-note}
+## Exercise 2: grammar of graphics
+See if you can figure out how to change the x axis so that is says "Warmer" and  "Cooler"; a `scale_x_discrete`. You might also try to assign fills to the violins so that their colors correspond with "Warmer" and "Cooler";  analogously, use the appropriate aesthetic and a `scale_fill_manual` layer.  
+
+Some hints:  
+- `limits` defines the possible values appearing in the data that the scale will show.  In a numerical column, it is numbers.  In a boolean column, it is `TRUE`, `FALSE`.  In a factor column, it is the names of the factors.  `ggplot` will automatically select limits that cover the entire range of data.  But the limits do not have to include all the values that actually appear in the data.  Only the data included in `limits` will appear on the plot. 
+- `breaks` is used together with `labels`.  `breaks` denote values in the data that you wish to indicate on the plot.  i.e. `limits` controls what data appears, and `breaks` controls which data are labeled.  By default, it is the same as `limits`.  
+- By default, each element in `breaks` will be labeled with the data value itself: e.g. if the column contains `TRUE` then the label will be `TRUE`.  If instead you want for all values equal to `TRUE` to be labeled with a different string, you specify it in the `labels` argument, one label to each of the `breaks` in the same order.
+- `values` is used for scales, like color/fill scales, where the data values correspond to some other aesthetic like blue/red or a line thickness.  To each of the `limits`, there should correspond an element of `values` in the same order.
+
+:::
+
+::: {.callout-note}
+## Exercise 3: grammar of graphics
+We've seen that weekend days have consistently fewer births by a significant margin.  It might make sense to create separate plots, one comparison plot for weekdays and the other for weekends.  Following a similar strategy as we did before, create a column called `is.weekend`.  Recreate the same violin plot, but this time add a `facet_grid` layer.  Read the documentation to see how to use it.
+:::
+
+- Data wrangling extensions: Joining datasets and pivoting datasets
+- Data pipeline extensions: Saving to csv, saving and writing R objects as .rds or .Rdata, saving or writing json files, retrieving data from an api.
+- Programming tools extensions: for/while loops, if statements, mapping, writing custom functions.
+
+
+## Rendering quarto files
+
+- Simple `.R` files are useful if you have large chunks of function definitions or other code you want to run all in one go to get a single output.  You can also *call* a `.R` file from within another file, such as this notebook by using the `source` function.  This behavior is helpful when you want to reuse the same script in many notebooks.
+
+- We've been working in a `.qmd` document, a Quarto notebook.  Code *notebooks* allow you to combine code, figures, and text into a document that you can export as a webpage, a pdf document, or anything really.  [Quarto Documentation](https://quarto.org/docs/guide/)
+
+- This notebook, as we've been doing, also allows you execute small chunks of code at time.  This behavior saves you from having to copy and paste code into the console, or highlight and right click on code.  You've grouped it already into helpful *code chunks*.
+
+- There are many customization options available at the document level.  For example, setting a table of contents, which output format to make, a title, an author, any global option you want applied to every chunk.
+
+- There are also customization options at the chunk level.  For example, [Choose whether code is executed, whether it is included in the output, whether errors are included...](https://quarto.org/docs/computations/execution-options.html).  We can also refer to figures, such as @fig-births.time by their label.  We can change figure dimensions too.
+
+- Rendering allows you to compile your document for easy sharing and viewing with anyone.  It's useful for documenting reports about your work with others.  
+
+- To render, click the document outline in the top middle part of the `qmd` file's pane.  
+
+- Common frustrating issue: the code works when you run it cell by cell but not when quarto renders.  What gives?  Usually, this is because you have some variable or data in your current environment that was created at one point in your file, but then you erased the code.  When quarto runs, it starts fresh, so that deleted code is never run.  To find the error, clear your R environment and then run the code cell by cell from the top.
+
+- To save a workspace, you can use `save.image` to produce an `RData` file.  In the future, loading the file will put all your R objects back into the workspace as they were when they were saved.  This is the fastest and most efficient option, but these files cannot be opened by any program other than `R`.
+
+```{r}
+#| label: save.image
+
+save.image(file = "export/rfundamentals.Rdata")
+```
+
+- Later, we can use `load("export/rfundamentals.Rdata")` to retrieve everything.
+
+- After you finish off some exercises, try rendering this notes file again to see you work appear.
+
+---
+
+
+# Modeling Numerical Data
+
+This section introduces linear models, including t-tests and ANOVA.
+
+
+## Student's t-test
+
+- Now suppose we wish to conduct a statistical test to determine whether the difference in births in warmer / cooler months is of significance.
+
+```{r}
+#| label: rstatix
+#| output: false
+
+library(rstatix)
+```
+
+- rstatix supports the same piping with dataframes that tidyverse does.
+- We would like to perform a t test using the `t_test` function.  Let's ask a chatbot how to use it.
+
+- Formulas in R are indicated like `left.side ~ right.side`.  They are usually used as inputs to functions when we wish to specify a relationship between `left.side` and `right.side`.  For example, in regression the `left.side` is often `y` or the `response`, and the `right.side` is `x1 + x2 + ...` the predictors.  They can be used in other contexts too, and the documentation for a function will specify what is supposed to be on each side of the formula.
+
+```{r}
+#| label: t_test
+
+births %>% t_test( birth.count ~ is.warmer, detailed = TRUE)
+```
+
+
+- How should we interpret this result?  Is statistical significance relevant here?  Depends on the context.  
+- If we are asking: "Should we increase staffing at the hospital during warmer months?"  Then no, the significant result doesn't matter because the total average difference in births per day nationally is just 404.  
+- If we are asking: "Do humans instinctually attempt to give birth in the summer?  Perhaps there is higher fertility in the fall and winter?"  The test implies the effect is small, but meaningful.  Something is going on worth investigating.
+
+::: {.callout-note}
+## Exercise 1: t-test assumptions
+The Welch's t-test, which the `t_test` function performs by default, assumes that each sample is taken from a normal distribution with unknown variance--not necessarily equal to one another.  The test tries to determine whether the two source distributions have the same mean.
+
+First, based on our investigation so far, do you expect normal distributions?  Why or why not?
+
+:::
+
+
+::: {.callout-note}
+## Exercise 2: t-test assumptions
+Let's test out the normality assumption formally.  First, produce two histograms, one for each sample, using your knowledge of `ggplot2`.  Use your resources to determine which `geom_` to use and which aesthetics to provide.  You may wish to use a `facet_grid` or an additional aesthetic to distinguish between the two samples.
+:::
+
+::: {.callout-note}
+## Exercise 3: t-test assumptions
+To accompany your histograms, you should now also create a QQ plot.  The y-axis is the quantile of the data distribution, and the x-axis is the quantile of the reference distribution--i.e. normal in this case.  The plot contains one point per observation in the data.  If the data distribution is normal, the plot will form a line.
+
+Use `geom_qq` and `geom_qq_line` to build a QQ plot with `ggplot2`.
+
+:::
+
+
+## Linear Regression and ANOVA
+- Linear regression allows us to establish whether some response variable is associated with some predictor variables.
+- Lets revisit the `iris` dataset we inspected earlier.
+- The `lm` function is builtin to R.  `lm` stands for linear model. Let's read the documentation.
+
+```{r}
+#| label: lm.help
+#| eval: false
+
+help(lm)
+```
+
+- The "formula" object strikes again.  In the 'Details' section, we see that the left side expects a response variable, and the right side expects predictor variables.  The variables are separated with plus signs.  One can create interaction terms with the `*` or the `:`, but we won't use that here.
+- Let's model `Petal.Length` as a function of `Petal.Width`.  It seems reasonable to guess that these quantities might be positively correlated.  But the relationship between the two probably differs between species.  Thus, we will want to look at an interaction between `Petal.Width` and `Species`.
+
+```{r}
+#| label: lm
+
+petal.len.wid <- lm(data = iris, formula = Petal.Length ~ Petal.Width * Species )
+class(petal.len.wid)
+summary(petal.len.wid)
+anova(petal.len.wid)
+```
+
+- The call to `lm` fits the model.  
+- The `summary` function, which we previously used on a dataframe, gives us model fit information when applied to an `lm` object.  It is showing coefficient values and statistical tests for whether the coeffecient is significantly different from zero.  Many R objects have a summary method that is unique to their needs.
+- The `anova` function computes the corresponding anova test, which tests whether each model term, relative to the model as whole, explains a lot of the variance in the response variable.
+
+::: {.callout-note}
+## Exercise 1: linear model
+
+Fit a linear model for any one of the species with `Sepal.Length` as the dependent variable and `Petal.Length` as the independent variable.  Store the model in a variable. 
+:::
+
+::: {.callout-note}
+## Exercise 2: linear model
+This question is about interpreting the linear models.  Pick any one of three above.
+
+1. What does petal length mean?
+2. What does sepal length mean?
+3. When sepal length increases by one centimeter, how much does the petal length change?
+4. Assess how strong the linear relationship is.
+5. Over what range of sepal lengths is this model useful?
+6. Interpret the Intercept term in this model.
+7. Find the ratio of the fitted variability in the residuals to the average magnitude of the predictions.
+
+:::
+
+::: {.callout-note}
+## Exercise 3: linear model
+
+Determine whether the relationship between `Sepal.Length` and `Petal.Length` differs between species.  If so, which ones?
+
+:::
+
+```{r}
+#| label: predict
+
+predict(petal.len.wid) %>% head()
+```
+
+- We can retrieve predicted values from a fitted `lm` object with the `predict` function.  Like `summary` different objects have outputs that are specific to their type.
+
+
+## Visualizing model predictions
+- What if I want to visualize my model?  For complex models many variables, the process is difficult because it's hard to plot more than two variables at a time.
+- The `geom_line` layer accepts a sequence of points and outputs a line that connections them in order.
+
+```{r}
+#| label: plot.predictions.native
+
+ggplot(
+    data = iris, 
+    mapping = aes(x = Petal.Width, y = Petal.Length, color = Species)
+    ) +
+    geom_point() +
+    geom_line(mapping = aes(y = predict(petal.len.wid)))
+```
+
+
+- This time, we had to modify the `y` aesthetic for just the `geom_line` layer, so we specified it explicitly.
+
+- The approach above will work for any kind of model.  But for certain simple models, `ggplot` has a builtin function for visualization.  It's useful for a quick glimpse.
+
+```{r}
+#| label: plot.prediction.ggplot
+
+
+ggplot(
+    data = iris,
+    mapping = aes(x = Petal.Width, y = Petal.Length, color = Species)
+    ) +
+    geom_point() + 
+    geom_smooth(method = "lm", formula = y ~ x)
+```
+
+
+::: {.callout-note}
+## Exercise 1: visualize models
+Fit a linear model for any one of the species with `Sepal.Length` as the dependent variable and `Petal.Length` as the independent variable.  Store the model in a variable. 
+:::
+
+::: {.callout-note}
+## Exercise 2: visualize models
+Use your resources to figure out how to make a plot similar to that above, but with the equations of the models and their $R^2$ values right on the plot.
+:::
+
+
+## Linear mixed effects models
+- Many modern experiments utilized mixed designs for their data, such as repeated measures.
+
+- Lets look at a sample dataset to illustrate mixed linear modeling
+```{r}
+#| label: sleep.study.data
+
+library("lme4")
+library("lmerTest")
+
+head(sleepstudy)
+```
+
+```{r}
+#| label: sleep.study.help
+#| eval: false
+
+help(sleepstudy)
+```
+
+- We wish to model how reaction time is related to days of sleep deprivation.
+
+- This model is a candidate for mixed effects modeling because each subject was measured many times.  We might experiment therefore that one or more model parameters might vary between subjects.
+
+- A fixed effect is like a global average.  It tells us how an average subject's reaction time changes with sleep deprivation days.  Fixed effects are usually the quantities we wish to measure and draw conclusions from.
+
+- A random effect has two parts: the fixed effect it modifies, and the grouping variable that determines which data points all receive the same modification.  Typically, a random effect grouping factor is a nuisance in the data that is not really of scientific interest.  It is merely there to facilitate a better fit for the fixed effect.
+
+::: {.callout-note}
+## Exercise 1: mixed model data
+
+1. Which variable is the dependent variable? 
+2. Which variable(s) form the fixed effect(s)?  Don't forget about the intercept!
+3. Which fixed effects might be modified by a random effect?
+4. What is the grouping variable for that random effect?
+
+:::
+
+::: {.callout-note}
+## Exercise 2: mixed model data
+
+Using your answers to exercise 1 as guidance, create a plot that shows the dependent variable on the `y` axis, the independent variable on the `x` axis, and the grouping variable as the `color` aesthetic so you can identify which datapoints go together.
+:::
+
+{{< include solutions/_sol_mixed.model.data.qmd  >}}
+
+- Let's see how to fit the model.
+
+```{r}
+#| label: lmer.help
+#| eval: false
+
+help(lmer)
+```
+
+Let's see an example
+```{r}
+mx.effects <- lmer(
+    formula = Reaction ~ Days  + (1 | Subject), 
+    data = sleepstudy
+)
+summary(mx.effects)
+```
+
+- The REML criterion at convergence is telling you how likely your data is under the fitted model.  The number is not meaningful in and of itself, but it can be used to compare models with the same fixed effects.  Lower (more negative) values are better.
+
+- Scaled residuals are each residual divied by the fitted residual standard error.
+
+- The random effects section shows how much the subjects (grouping variable) varies about the fixed effect, as well as a fitted measure of correlation between random effects.  i.e. When a subject has a higher intercept, do they also have a larger effect for sleep deprivation as days go by?
+
+- The random effects section also shows how large the residuals are in the fitted model.  Recall we scaled everything by the maximum of `Reaction`, so this standard deviation refers to average variation of 5% of the max.
+
+- The fixed effects are the parameters of interest that apply to the general population.  This table has a similar interpretation to regular linear model.
+
+- The correlation section views the fixed effects as random variables where any particular observation is the result of sampling randomness.  It suggests that if one repeated the sampling many times, we would tend to see that a larger effect of deprivation tends to be observed with a slightly lower average intercept term.
+
+- Finally, note that the `anova` function works as before.
+
+```{r}
+anova(mx.effects)
+```
+
+::: {.callout-note}
+## Exercise 1: mixed modeling
+
+Modify the model we created so that it also includes a random effect for the `Days` term.  Is it a better model?  How can you tell?
+:::
+
+::: {.callout-note}
+## Exercise 2: mixed modeling
+
+Create a regular old linear model with the same fixed effects.  Do the fitted parameters differ?  By how much?
+:::
+
+
+---
+
+
+# Textual Analysis
+This section covers using the `tm` library to prepare a Corpus, which we apply to wordclouds.  Then it introduces several common string manipulations and the `purrr` package.
+
+
+## Reading in a csv review
+- Let's do a quick refresher on loading data from a csv file.
+- The working directory is the file system location ("e.g. Documents") in which R looks for files when you try to open them.
+
+```{r}
+#| label: wd.review
+#| output: false
+
+getwd()
+# setwd("your directory here")
+
+```
+
+- We'll use `read_csv` to load the data.   (There is also a `read.csv` in R's built in `utils` package, but `read_csv` from `tidyverse` has a few nice extra options.)
+
+```{r}
+#| label: make.wos
+
+library(tidyverse)
+
+wos.raw <- read_csv("data/ClimateAndArt.csv")
+glimpse(wos.raw)
+
+wos <-  wos.raw %>%
+    # Select and rename the three important columns
+    # Foreshadowing for the reqs of a Corpus
+    select(doc_id = `UT (Unique WOS ID)` , text = Abstract, title = `Article Title`)
+
+    # Note the use of backticks `column name` when refering to columns with "illegal" names containing special characters or spaces. 
+
+glimpse(wos)
+
+```
+
+- The web of science is a research tool that aggregates research articals across many journals and helps researchers find and discover research they might be interested in.  
+
+- There are many of these files in the directory that we need to combine.  You could read them all in one by one, but if there were too many to type out we'd need a better solution.  We'll come back to this issue.
+
+## Prepping a corpus
+- We'd like to know what kinds of words are in these articles.  For that, we use a wordcloud.  The larger the word in the wordcloud, the more frequent it is in the dataset.  
+
+- Let's look up `wordcloud2`
+```{r}
+#| label: wordcloud
+#| output: false
+
+library(wordcloud2)
+
+help(wordcloud2)
+
+```
+
+- [Wordcloud2 docs](https://www.rdocumentation.org/packages/wordcloud2/versions/0.2.1/topics/wordcloud2)
+
+- We need to create a sorted dataframe with two columns: word, frequency of word.
+
+- The `tm` library is the workhorse of text mining in R.  It has many standardized functions that other packages depend on.  Here are the basic steps to start working with any `tm` based package.
+
+See the [documentation online](https://www.rdocumentation.org/packages/tm/versions/0.7-14/topics/termFreq)
+
+- Every `tm` function accepts a Corpus as a starting point.  `wos` has to contain a unique `doc_id` column, a `text` column, and then any other metadata we care to mention.
+
+```{r corpus}
+#| label: corpus
+#| output: false
+
+library(tm) # topic modeling, word processing
+
+# Create a corpus
+corpus <- Corpus( DataframeSource(wos) )
+
+```
+
+- To make any Corpus, we start with an object containing the inputs, in this case a dataframe.  
+- We call the appropriate `Source` function to inspect the data.  The role of the `Source` function is to ensure the data is in an interpretable format.
+- Next we call a `Corpus` function.  There are many!  Both created in `tm` as well as other packages.  The goal of the `Corpus` function is to prep our data for a specific use.
+
+## The TermDocumentMatrix
+
+- We turn now to a `TermDocumentMatrix`.  Each row corresponds to a word in the corpus, and each column corresponds to a document in the corpus.  The entries are counts for how many times that word appeared in that document.  This is a common format for text mining applications.
+
+```{r}
+#| label: term.document.matrix
+
+# Create a term-document matrix where every row is one term, and every column is 1 document
+tdm <- TermDocumentMatrix(
+  corpus,
+  control = list( # control which words are considered (e.g. don't include 'the')
+    # bounds = list(global = c(min.docs.w.word, max.docs.w.word)),
+    tolower = TRUE, # upper and lower case are counted as the same word
+    removePunction = TRUE,
+    stopwords = TRUE
+    # What else would you put here? We'll come back to this.
+  )
+)
+
+tdm
+
+```
+
+## Converting to the `word.freq` data.frame
+
+- To obtain the total number of times each word occurs, we need to add up the number of times each word occurs in each document.  These are all the entries in each row, so we'll use `row_sums` from the `slam` package.
+
+```{r}
+#| label: word.freq
+
+# slam contains high performance ops for sparse matrices
+# the tdm object is a sparse matrix
+
+library("slam")
+
+
+word.freq <- data.frame(row_sums(tdm)) %>%
+  rownames_to_column(var = "word") %>%
+  rename(freq = row_sums.tdm.)
+
+head(word.freq)
+tail(word.freq)
+
+```
+
+- Nice! We're nearly there.  All that's left is to get the form of the dataframe right.
+
+- Currently, our words are captured as rownames instead of a column.  There's a quick function to fix that from the `tibble` package aptly called `rownames_to_column`.
+
+## Building the wordcloud
+- Finally, we'll need to use the required column names for the `wordcloud2` function: `word` and `freq`.   
+- It's your job to finish things off.  
+
+::: {.callout-note}
+## Exercise: word cloud
+Note the order of the exercises is wonky.  The code will work once you complete Exercise 1.
+
+Use the template code below make a word cloud. During this exercise, you will have to look up the documentation experiment with the various arguments of each function.  Check out their effects on the wordcloud after each change by running this code chunk.
+```{r}
+#| label: word.cloud.exercise
+
+# Create a term-document matrix 
+tdm <- TermDocumentMatrix(
+  corpus,
+  control = list(
+    # Try adjusting this important parameter.  
+    bounds = list(local = c(5,50)),
+    tolower = TRUE,
+    removePunctuation = TRUE,
+    stopwords = TRUE,
+    removeNumbers = TRUE
+    # What else would you put here? We'll come back to this.
+  )
+)
+
+
+# Exercise 1:  Yes the number is correct.  Start here.
+# When you're finished, run this code cell.  Your wordcloud should appear
+# Create the frequency table
+word.freq <- data.frame(row_sums(tdm)) %>%
+    rownames_to_column(var = "word") %>%
+    rename(freq = row_sums.tdm.)
+
+
+
+# Exercise 3: Yes the number is correct.  End here
+# Create the wordcloud itself
+wordcloud <- wordcloud2(
+   word.freq #,
+   # other.args to modify the appearance of the wordcloud?
+)
+
+# Display the worldcloud
+wordcloud
+
+```
+:::
+
+::: {.callout-tip collapse="true"}
+## Instructor solution
+{{< include solutions/_sol_word.cloud.qmd >}}
+:::
+
+Optionally, if you want to save your wordcloud for later, you can use the following code.
+```{r}
+#| label: save.wordcloud
+#| eval: false
+
+# Optional: Saving a wordcloud
+# Use htmlwidgets to save as an interactive file for your web browser.
+library("htmlwidgets")
+
+saveWidget(wordcloud, "export/wordcloud.html", selfcontained = TRUE)
+```
+
+The first argument is the htmlwidget to save, the second argument is the name to give the file, and the third argument includes all the data required to generate it so it will always function properly.
+
+## String split
+
+- The `stringr` package, part of the `tidyverse` contains a suite of functions dedicated to searching, modifying, splitting, or otherwise manipulating strings.  Any researcher working with text programmitically will have to learn some of them.
+
+- Suppose for instance we want to create a dataframe of all the ORCIDs appearing in this dataset.  
+
+- Lets take a look at the ORCIDs column in the dataset.
+
+```{r}
+#| label: orcid.inspect
+
+wos.raw %>% select(ORCIDs) %>% head()
+```
+
+- The ORCIDs for each author are listed in the format: "Last, First Middle/ORCID".  For publications with multiple authors, the authors are separated by a semicolon and a space.
+
+- To solve this programming problem, we're going to need to *split* each ORCIDs entry by the string "; " into separate *rows*.  Then, we're going to have to split by the string "/" into separate *columns*
+
+```{r}
+#| label: separate
+
+wos.orcid <- wos.raw %>%
+
+    # Get just the name/orcid combos
+    select(name.orcid = ORCIDs) %>%
+
+    # Take each row and split it into multiple rows, one for each ;
+    separate_rows(name.orcid, sep = "; ") %>%
+
+    # Remove all the empty entries
+    filter(name.orcid != "") %>%
+
+    # Split again, this time into columns    
+    separate_wider_delim( 
+
+        # The name of the column to split
+        cols = name.orcid,
+
+        # The separater by which to split
+        delim = "/", 
+
+        # The names of the new columns to create
+        names = c("full.name", "orcid"),
+
+        # A few invalid ORCIDs, drop them for now
+        too_many = "drop"
+    )
+
+head(wos.orcid)
+
+```
+
+
+
+- In general, functions that split strings have an argument called either "sep" or "delim".
+
+- There is also a function called `str_split` that performs a similar function, but it returns a vector containing the split components instead of creating a new row or column.
+
+::: {.callout-note}
+## Exercise 1: split strings
+Extend the code above such that there are two additional columns called "given.name" and "surname".
+
+```{r}
+#| label: split.strings.exercise
+
+wos.orcid %>% 
+  filter(full.name != "") %>%
+  
+  separate_wider_delim(
+      cols = full.name,
+      delim = ", ",
+      names = c("surname", "given.name"),
+      
+      too_many = "drop",
+      too_few = "drop"
+  )
+
+```
+
+:::
+
+::: {.callout-note}
+## Exercise 2: split strings
+Modify your code above such that it retains the `full.name` column.
+
+:::
+
+::: {.callout-note}
+## Exercise: unite strings
+Read about the `unite` function and experiment with using to reverse the split operations.
+
+:::
+
+
+## Searching strings
+
+- The other most common string task is to search for strings that contain a *pattern*
+
+```{r}
+#| label: str_detect
+
+mountains <- c(
+    "Bear Peak", 
+    "Green Mountain", 
+    "South Boulder Peak", 
+    "Flagstaff Mountain"
+)
+
+query <- "Peak"
+
+mountains
+str_detect(string = mountains, pattern = query)
+
+```
+
+- `str_detect` returns `TRUE` or `FALSE` once for each element of the character vector argument "string".  
+
+- There's another very similar function built in to R called `grepl`, just so you know.
+
+- These functions are useful for filtering dataframes or vectors.
+
+- For good measure, there is a function called `str_replace` that searches a string for a match, and if it finds one, it replaces the match with a different string you provide.
+
+::: {.callout-note}
+## Exercise 1: search strings
+Print the top few entries in your ORCID dataframe, pick any orcid, and find all the papers that person was an author on.  Lots of people only have 1 paper, but you might be able to find others.  
+
+Searching this way is helpful because the ORCIDs are standard across journals, but the names themselves might be printed differently.
+
+:::
+
+::: {.callout-note}
+## Exercise 2: search strings
+Reusing some of our code above with modifications, obtain a list of individuals who do not have both a surname and a given name listed.  
+
+Hint: Everyone with both name types has the same pattern in their full name.
+
+:::
+
+
+## Regular expressions
+
+- Sometimes, we need finer control over the strings we search on, split on, or replace with.  
+
+- Regular expressions, or regex for short are very powerful pattern matching tools that allow you specify complex queries like: only the beginning/end of the string, strings containing "start" anything at all then "stop" but not strings that contain "start" and "stop" in other places, and so on. 
+
+- Here's an example of a powerful regular expression that detects whether any of the keywords in our dataset are accidentally repeated.  
+
+```{r}
+#| label: powerful.regex
+
+repeated.pattern <- "(?:^|; )([^;]+)(?:;.*; |; )\\1(?:$|;)"
+
+wos.key <- wos.raw %>%
+    select(keywords = Author.Keywords) %>%
+    mutate(has.duplicate = str_detect(keywords, repeated.pattern) )
+
+wos.key %>% filter(has.duplicate, nchar(keywords) < 88)
+```
+
+- You could take a whole class on regex, but I thought you should see the basic concepts.
+
+- Here's the [documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_expressions).  It works in R too, but you do have to be careful to use an extra backlash everywhere a backslash appears in the documentation.
+
+- Suppose we want to extract all the publications where the lead author's last name starts with "A".  We can't just `str_detect` "A" because there may be other authors whose names start with "A".  We could try to `str_split` on spaces and look for a capital "A" in the first element... but that's starting to get messy.
+
+```{r}
+#| label: regex.start
+
+wos.author <- wos.raw %>%
+    select(authors = Author.Full.Names)
+    
+
+head(wos.author %>% filter( str_detect(authors, "^\\s*A")))
+```
+
+- "^" matches the beginning of a string only.
+- "\\s" is a *character class* that matches any white space character (such as a space, a tab, or a new line.).  We're accounting here for possible unwanted whitespace.
+- "*" is a *quantifier* that means: match zero or more of the previous character. This ensures we're prepared for any amount of white space, including none.
+
+- "A" is just a character that matches... A
+
+- For good measure, there's another nice way to handle the whitespace issue
+
+```{r}
+#| label: str_trim
+
+head( wos.author %>% filter( str_detect(  str_trim(authors), "^A")))
+```
+
+- The `str_trim` function removes whitespace from the beginning and end of strings.  It's good practice to just always apply this kind of cleaning to raw data.
+
+::: {.callout-note}
+## Exercise 1: regex
+Find all the publications whose last author has the first name "Lisa".  Here are the tools you need.  Combine them in the correct way.
+
+- $ matches the end of a string
+- . matches any character
+- "*" matches any number of the preceding character, including zero
+- Every first name is preceded by ", ".
+- Some, but not all, authors have additional names.
+
+:::
+
+::: {.callout-note}
+## Exercise 2: regex
+Find all the publications with the keyword "climate" alone without additional text like "climate change" or "rainy climate".  
+
+- Every keyword is preceded by either "; " or the beginning of the string.
+- Every keyword ends with either "; "or the end of the string.
+- The | character will match exactly one of either the character on its left or on its right.
+- Paretheses form *capturing groups*.  The capturing part is not important.  But you can use them, say, on either side of the | to indicate that you wish to match a whole sequence of characters on the left/right, or its alternative on the opposite side.
+- \\b matches any word boundary such as a space, punctuation or the beginning/end of a string.  
+
+:::

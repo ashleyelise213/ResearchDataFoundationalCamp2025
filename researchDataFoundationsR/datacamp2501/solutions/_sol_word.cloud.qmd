@@ -1,0 +1,37 @@
+This code serves as a solution to question 1.
+```{r}
+#| label: word.cloud.solution
+
+# Create a term-document matrix 
+tdm <- TermDocumentMatrix(
+  corpus,
+  control = list(
+    # Try adjusting this important parameter.  
+    # bounds = list(local = c( min.occurences.in.doc, max.occurences.in.doc)),
+    tolower = TRUE,
+    removePunction = TRUE,
+    stopwords = TRUE #,
+    # What else would you put here? We'll come back to this.
+  )
+)
+
+
+# Exercise 1:  Yes the number is correct.  Start here.
+# When you're finished, run this code cell.  Your wordcloud should appear
+# Create the frequency table
+word.freq <- data.frame(row_sums(tdm)) %>%
+    rownames_to_column( var = "word") %>%
+    rename( freq = row_sums.tdm.  )
+
+
+
+
+# Exercise 3: Yes the number is correct.  End here
+# Create the wordcloud itself
+wordcloud <- wordcloud2(
+   word.freq
+)
+
+# Display the worldcloud
+wordcloud
+```

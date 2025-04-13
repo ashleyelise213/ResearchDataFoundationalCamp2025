@@ -1,0 +1,21 @@
+`Days` is the fixed effect, and  `Subject` is the grouping variable for a random effect on `Days` and the intercept.
+
+```{r}
+#| label: mixed.model.data.viz
+
+# Form the base layer with sleep study data and aesthetic assignments
+ggplot(sleepstudy, aes(x = Days, y = Reaction, color = Subject)) +
+
+  # Add points for each observation
+  geom_point() +
+
+  # Connect each observation of the same subject
+  geom_line(aes(group = Subject)) +
+
+  # Add labels
+  labs(
+    title = "Reaction Times by Days of Sleep Deprivation",
+    x = "Days of Sleep Deprivation",
+    y = "Reaction Time (ms)"
+  )
+```

@@ -1,0 +1,7 @@
+filter(full.name != "") %>%
+
+separate_wider_delim(
+    cols = full.name,
+    delim = ", ",
+    names = c("surname", "given.name")
+)

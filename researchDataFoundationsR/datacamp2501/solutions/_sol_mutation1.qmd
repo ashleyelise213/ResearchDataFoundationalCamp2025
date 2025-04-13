@@ -1,0 +1,8 @@
+```{r}
+#| label: is.warmer
+
+births <- births %>%
+    mutate( is.warmer = between(month, 4, 9))
+
+head(births)
+```

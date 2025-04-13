@@ -1,0 +1,10 @@
+```{r}
+#| label: sol_packages1
+
+# Run this line once for each R version
+# install.packages("fivethirtyeight")
+
+library(fivethirtyeight)
+
+births <- US_births_2000_2014
+```
